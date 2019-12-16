@@ -14,6 +14,8 @@ var upload = multer({storage: storage})
 
 var imageName = upload.single('image');
 
+var imageNames = upload.array('images', 5);
+
 function uploadImage(req, res, next){
     ImageController.image.create({
         image : req.file.filename
@@ -27,9 +29,28 @@ function uploadImage(req, res, next){
     .catch(function(err){
         console.log(err)
     })
+    next();
+}
+
+function uploadImages(req, res, next){
+    ImageController.image.multiCreate({
+        image:req.files.filename
+    })
+     .then(function(result){
+         res.send({
+             status: 300,
+             message: "your mulitiple images has been uploaded"
+         })
+     })
+     .catch(function(err){
+         console.log(err)
+     })
+     next();
 }
 
 module.exports = {
     imageName,
-    uploadImage
+    uploadImage,
+    imageNames,
+    uploadImages
 }
